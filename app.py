@@ -1,5 +1,5 @@
 import streamlit as st
-import pandas as pd
+import numpy as np
 import joblib
 
 # ------------------ PAGE CONFIG ------------------
@@ -11,7 +11,6 @@ st.set_page_config(
 
 # ------------------ LOAD MODEL ------------------
 model = joblib.load("heart_rf_model.pkl")
-feature_names = joblib.load("feature_names.pkl")
 
 # ------------------ HEADER ------------------
 st.title("❤️ Heart Disease Risk Predictor")
@@ -115,14 +114,11 @@ import plotly.graph_objects as go
 # ================== PREDICT ==================
 if st.button("Predict Heart Disease Risk", use_container_width=True):
 
-    input_data = pd.DataFrame([[
+    input_data = np.array([[
         age, sex, cp, trestbps, chol, fbs,
         restecg, thalach, exang, oldpeak,
         slope, ca, thal
-    ]], columns=feature_names)
-
-    # Ensure correct feature order (deployment safety)
-    input_data = input_data[model.feature_names_in_]
+    ]])
 
     probability = model.predict_proba(input_data)[0][1]
     threshold = 0.4
@@ -279,3 +275,4 @@ if st.button("Predict Heart Disease Risk", use_container_width=True):
         "This application provides machine-learning–based heart disease risk "
         "estimation for educational purposes only and is not a medical diagnosis."
     )
+
